@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.sultanmuradnotes.ui.pages.EmptyNoteScreen
 import com.example.sultanmuradnotes.ui.pages.HomeScreen
 import com.example.sultanmuradnotes.ui.pages.IndividualNoteScreen
 import com.example.sultanmuradnotes.ui.viewmodel.HomeViewModel
@@ -17,7 +18,7 @@ fun Navigation(
 ) {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = Screen.HOME.name) {
-        composable(route = "home") {
+        composable(route = Screen.HOME.name) {
             HomeScreen(homeViewModel = homeViewModel, navController = navController)
         }
 
@@ -30,7 +31,11 @@ fun Navigation(
         )
         ) {
 
-            IndividualNoteScreen(id = it.arguments?.getLong("id"), homeViewModel = homeViewModel)
+            IndividualNoteScreen(id = it.arguments?.getLong("id"), homeViewModel = homeViewModel, navController = navController)
+        }
+
+        composable(Screen.EMPTY.name) {
+            EmptyNoteScreen(homeViewModel = homeViewModel, navController = navController)
         }
     }
 }

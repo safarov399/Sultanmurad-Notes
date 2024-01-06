@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -14,8 +15,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -32,11 +31,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.sultanmuradnotes.db.domain.Note
-import com.example.sultanmuradnotes.sampledata.NoteSample
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import com.example.sultanmuradnotes.navigation.Screen
 import com.example.sultanmuradnotes.ui.viewmodel.HomeViewModel
@@ -53,7 +50,7 @@ fun NoteWidget(note: Note) {
         contentAlignment = Alignment.CenterStart
     ) {
         Text(
-            text = note.content,
+            text = text,
             style = MaterialTheme.typography.bodyMedium,
             overflow = TextOverflow.Ellipsis,
             color = Color.Gray,
@@ -76,12 +73,9 @@ fun NoteWidget(note: Note) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun VerticalScrollingNoteList(notes: List<Note>, homeViewModel: HomeViewModel, navController: NavController) {
-    val context = LocalContext.current
-    val sampleNotes: List<Note> = NoteSample.sample()
     var count = 0
     var fabHeight by remember {
         mutableIntStateOf(0)
@@ -94,14 +88,17 @@ fun VerticalScrollingNoteList(notes: List<Note>, homeViewModel: HomeViewModel, n
                 },
                 shape = CircleShape,
                 onClick = {
-                    homeViewModel.addOrUpdateNote(note = Note(null, "New Note"))
-
+//                    homeViewModel.addOrUpdateNote(note = Note(null, "New Note"))
+                    navController.navigate(Screen.EMPTY.name)
                 },
             ) {
                 Icon(imageVector = Icons.Filled.Add, contentDescription = "icon")
             }
         },
-        floatingActionButtonPosition = FabPosition.End
+        floatingActionButtonPosition = FabPosition.End,
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black)
     ) {
         LazyColumn(
             modifier = Modifier.padding(
@@ -109,7 +106,7 @@ fun VerticalScrollingNoteList(notes: List<Note>, homeViewModel: HomeViewModel, n
                 end = 20.dp
             )
         ) {
-            items(notes.size) { note ->
+            items(notes.size) {
                 Box(
                     modifier = Modifier
                         .background(Color.Transparent)
