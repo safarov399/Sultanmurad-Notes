@@ -27,7 +27,7 @@ class HomeViewModel @Inject constructor(private val noteRepository: NoteReposito
 
      val noteListFlow: Flow<List<Note>> = noteRepository.getAll()
 
-     fun getById(id: Long?): Note {
+     fun getById(id: Long?): Flow<Note> {
         return noteRepository.getById(id)
     }
      fun addOrUpdateNote(note: Note) {

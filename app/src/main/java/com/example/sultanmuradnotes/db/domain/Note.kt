@@ -5,7 +5,6 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import com.example.sultanmuradnotes.utility.Converters
-import java.io.Serializable
 import java.time.LocalDateTime
 
 @TypeConverters(Converters::class)
@@ -17,7 +16,7 @@ data class Note(
     @ColumnInfo(name = "time_of_modification") var timeOfModification: LocalDateTime = LocalDateTime.now(),
 ) {
 
-
+    constructor(): this(null, "")
     override fun toString(): String {
         return "Note{" +
                 "id=" + id +

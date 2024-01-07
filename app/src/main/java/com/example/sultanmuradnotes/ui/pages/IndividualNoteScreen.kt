@@ -21,6 +21,8 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -35,8 +37,15 @@ import com.example.sultanmuradnotes.ui.viewmodel.HomeViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun IndividualNoteScreen(id: Long?, homeViewModel: HomeViewModel, navController: NavController) {
-    val note: Note = homeViewModel.getById(id)
-    var text by remember { mutableStateOf(note.content) }
+//    val note: Note = homeViewModel.getById(id)
+    val noteState by homeViewModel.getById(id).collectAsState(initial = Note())
+
+    var text by remember { mutableStateOf(noteState.content) }
+    LaunchedEffect(noteState) {
+        // Update text when noteState changes
+        text = noteState?.content ?: ""
+    }
+    var buttonEnabled by remember { mutableStateOf(true)}
     Scaffold(
         topBar = {
             TopAppBar(
@@ -55,14 +64,17 @@ fun IndividualNoteScreen(id: Long?, homeViewModel: HomeViewModel, navController:
                             }
                         )
                         Box(modifier = Modifier.padding(end = 10.dp)) {
-                            Button(onClick = {
-                                note.content = text
-                                if (note.id == 0.toLong()) {
-                                    note.id = null
+                            Button(enabled = buttonEnabled,onClick = {
+                                noteState.content = text
+                                homeViewModel.addOrUpdateNote(noteState)
+                                if (noteState?.content.isNullOrBlank()) {
+                                    homeViewModel.deleteNote(noteState)
+                                    buttonEnabled = false
+                                    navController.popBackStack()
                                 }
-                                homeViewModel.addOrUpdateNote(note)
-                                if (note.content.isBlank()) {
-                                    homeViewModel.deleteNote(note)
+                                else {
+                                    noteState?.content = text
+                                    homeViewModel.addOrUpdateNote(noteState)
                                 }
                             }) {
                                 Text("Save", color = Color.Black)

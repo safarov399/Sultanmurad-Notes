@@ -19,7 +19,7 @@ interface NoteDao {
     suspend fun createNote(note: Note)
 
     @Query("SELECT * FROM notes WHERE id IN (:id)")
-    fun getById(id: Long?): Note
+    fun getById(id: Long?): Flow<Note>
 
     @Update
     suspend fun update(note: Note)

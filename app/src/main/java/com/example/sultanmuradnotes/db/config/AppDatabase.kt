@@ -22,7 +22,7 @@ abstract class AppDatabase : RoomDatabase() {
                 INSTANCE = Room.databaseBuilder(context, AppDatabase::class.java, "Note")
                     // add migrations here
                     .fallbackToDestructiveMigration()
-                    .allowMainThreadQueries()
+//                    .allowMainThreadQueries()
                     .build()
             }
             return INSTANCE as AppDatabase

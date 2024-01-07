@@ -10,7 +10,7 @@ class NoteRepository(
 
      fun getAll(): Flow<List<Note>> = noteDao.getAll()
 
-     fun getById(id: Long?): Note = noteDao.getById(id)
+     fun getById(id: Long?): Flow<Note> = noteDao.getById(id)
 
      suspend fun insert(note: Note) = noteDao.createNote(note = note)
 
