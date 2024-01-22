@@ -1,10 +1,7 @@
 package com.example.sultanmuradnotes.ui.viewmodel
 
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import com.example.sultanmuradnotes.db.domain.Note
+import com.example.sultanmuradnotes.db.domain.NoteEntity
 import com.example.sultanmuradnotes.db.repository.NoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -14,51 +11,66 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
-
+interface HomeViewModelAbstract {
+    val noteEntityListFlow: Flow<List<NoteEntity>>
+    fun getById(id: Long?): Flow<NoteEntity>
+    fun addOrUpdateNote(noteEntity: NoteEntity)
+    fun deleteNote(noteEntity: NoteEntity)
+    fun deleteAll()
+}
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(private val noteRepository: NoteRepository) : ViewModel() {
+class HomeViewModel @Inject constructor(private val noteRepository: NoteRepository) : ViewModel(),
+    HomeViewModelAbstract {
     private val ioScope = CoroutineScope(Dispatchers.IO)
 
-    private val _selectedNoteState: MutableState<Note?> = mutableStateOf(null)
+//    private val _selectedNoteStateEntity: MutableState<NoteEntity?> = mutableStateOf(null)
 
-     val selectedNoteState: State<Note?>
-        get() = _selectedNoteState
+//     val selectedNoteStateEntity: State<NoteEntity?>
+//        get() = _selectedNoteStateEntity
 
-     val noteListFlow: Flow<List<Note>> = noteRepository.getAll()
+     override val noteEntityListFlow: Flow<List<NoteEntity>> = noteRepository.getAll()
 
-     fun getById(id: Long?): Flow<Note> {
+     override fun getById(id: Long?): Flow<NoteEntity> {
         return noteRepository.getById(id)
     }
-     fun addOrUpdateNote(note: Note) {
+     override fun addOrUpdateNote(noteEntity: NoteEntity) {
         ioScope.launch {
-            if (note.id == null) {
-                noteRepository.insert(note = note)
+            if (noteEntity.id == null) {
+                noteRepository.insert(noteEntity = noteEntity)
             } else {
-                noteRepository.update(note = note)
+                noteRepository.update(noteEntity = noteEntity)
             }
         }
     }
 
-     fun deleteNote(note: Note) {
+     override fun deleteNote(noteEntity: NoteEntity) {
         ioScope.launch {
-            noteRepository.delete(note = note)
+            noteRepository.delete(noteEntity = noteEntity)
         }
     }
 
-     fun deleteAllNotes() {
+    override fun deleteAll() {
         ioScope.launch {
             noteRepository.deleteAll()
+
         }
+
     }
 
-     fun selectNote(note: Note) {
-        _selectedNoteState.value = note
-    }
+//     fun deleteAllNotes() {
+//        ioScope.launch {
+//            noteRepository.deleteAll()
+//        }
+//    }
 
-     fun resetSelectedNote() {
-        _selectedNoteState.value = null
-    }
+//     fun selectNote(noteEntity: NoteEntity) {
+//        _selectedNoteStateEntity.value = noteEntity
+//    }
+
+//     fun resetSelectedNote() {
+//        _selectedNoteStateEntity.value = null
+//    }
 
 
 }

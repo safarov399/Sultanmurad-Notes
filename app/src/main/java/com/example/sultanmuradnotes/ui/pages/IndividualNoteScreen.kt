@@ -30,20 +30,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.sultanmuradnotes.db.domain.Note
+import com.example.sultanmuradnotes.db.domain.NoteEntity
 import com.example.sultanmuradnotes.ui.viewmodel.HomeViewModel
+import java.time.LocalDateTime
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun IndividualNoteScreen(id: Long?, homeViewModel: HomeViewModel, navController: NavController) {
 //    val note: Note = homeViewModel.getById(id)
-    val noteState by homeViewModel.getById(id).collectAsState(initial = Note())
+    val noteEntityState by homeViewModel.getById(id).collectAsState(initial = NoteEntity())
 
-    var text by remember { mutableStateOf(noteState.content) }
-    LaunchedEffect(noteState) {
+    var text by remember { mutableStateOf(noteEntityState.content) }
+    LaunchedEffect(noteEntityState) {
         // Update text when noteState changes
-        text = noteState?.content ?: ""
+        text = noteEntityState?.content ?: ""
     }
     var buttonEnabled by remember { mutableStateOf(true)}
     Scaffold(
@@ -65,16 +66,17 @@ fun IndividualNoteScreen(id: Long?, homeViewModel: HomeViewModel, navController:
                         )
                         Box(modifier = Modifier.padding(end = 10.dp)) {
                             Button(enabled = buttonEnabled,onClick = {
-                                noteState.content = text
-                                homeViewModel.addOrUpdateNote(noteState)
-                                if (noteState?.content.isNullOrBlank()) {
-                                    homeViewModel.deleteNote(noteState)
+                                noteEntityState.content = text
+                                noteEntityState.timeOfModification = LocalDateTime.now()
+                                homeViewModel.addOrUpdateNote(noteEntityState)
+                                if (noteEntityState?.content.isNullOrBlank()) {
+                                    homeViewModel.deleteNote(noteEntityState)
                                     buttonEnabled = false
                                     navController.popBackStack()
                                 }
                                 else {
-                                    noteState?.content = text
-                                    homeViewModel.addOrUpdateNote(noteState)
+                                    noteEntityState?.content = text
+                                    homeViewModel.addOrUpdateNote(noteEntityState)
                                 }
                             }) {
                                 Text("Save", color = Color.Black)

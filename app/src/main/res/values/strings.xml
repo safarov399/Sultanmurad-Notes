@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Sultanmurad Notes</string>
+    <string name="empty_notes_screen">Create your first note!</string>
+    <string name="home_screen_top_app_bar">Notes</string>
 </resources>

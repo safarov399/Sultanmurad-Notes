@@ -9,12 +9,13 @@ import androidx.navigation.navArgument
 import com.example.sultanmuradnotes.ui.pages.EmptyNoteScreen
 import com.example.sultanmuradnotes.ui.pages.HomeScreen
 import com.example.sultanmuradnotes.ui.pages.IndividualNoteScreen
+import com.example.sultanmuradnotes.ui.pages.SettingsPage
 import com.example.sultanmuradnotes.ui.viewmodel.HomeViewModel
 
 
 @Composable
 fun Navigation(
-    homeViewModel: HomeViewModel
+    homeViewModel: HomeViewModel,
 ) {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = Screen.HOME.name) {
@@ -25,17 +26,25 @@ fun Navigation(
         composable(route = Screen.NOTE.name + "/{id}", arguments = listOf(
             navArgument("id") {
                 type = NavType.LongType
-//                nullable = true
-//                defaultValue = null
             }
         )
         ) {
 
-            IndividualNoteScreen(id = it.arguments?.getLong("id"), homeViewModel = homeViewModel, navController = navController)
+            IndividualNoteScreen(
+                id = it.arguments?.getLong("id"),
+                homeViewModel = homeViewModel,
+                navController = navController
+            )
         }
 
         composable(Screen.EMPTY.name) {
             EmptyNoteScreen(homeViewModel = homeViewModel, navController = navController)
+        }
+
+        composable(Screen.SETTINGS.name) {
+            SettingsPage(
+                navController = navController,
+            )
         }
     }
 }

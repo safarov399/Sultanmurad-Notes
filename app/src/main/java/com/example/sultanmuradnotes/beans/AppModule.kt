@@ -1,4 +1,5 @@
 package com.example.sultanmuradnotes.beans
+
 import android.app.Application
 import com.example.sultanmuradnotes.db.config.AppDatabase
 import com.example.sultanmuradnotes.db.dao.NoteDao
@@ -30,4 +31,6 @@ class AppModule {
     fun provideNoteDao(appDatabase: AppDatabase): NoteDao {
         return appDatabase.noteDao()
     }
+
+
 }

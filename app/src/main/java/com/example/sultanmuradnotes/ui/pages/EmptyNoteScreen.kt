@@ -1,8 +1,6 @@
 package com.example.sultanmuradnotes.ui.pages
 
 import android.annotation.SuppressLint
-import android.app.Activity
-import androidx.activity.OnBackPressedDispatcher
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,19 +26,22 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.sultanmuradnotes.db.domain.Note
+import com.example.sultanmuradnotes.db.domain.NoteEntity
 import com.example.sultanmuradnotes.ui.viewmodel.HomeViewModel
+import com.example.sultanmuradnotes.utility.NoteColor
+import kotlin.random.Random
 
 @SuppressLint("RestrictedApi")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EmptyNoteScreen(homeViewModel: HomeViewModel, navController: NavController) {
-    val activity = (LocalContext.current as? Activity)
-    var note: Note = Note(null, "")
-    var text by remember { mutableStateOf(note.content) }
+    val randomNumber = Random.nextInt(NoteColor.colorList.size)
+    val backGroundColor = NoteColor.colorList[randomNumber].mainColor
+    val textColor = NoteColor.colorList[randomNumber].textColor
+
+    var noteEntity = NoteEntity(null, "", backGroundColor, textColor)
+    var text by remember { mutableStateOf(noteEntity.content) }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -59,11 +60,11 @@ fun EmptyNoteScreen(homeViewModel: HomeViewModel, navController: NavController) 
                             }
                         )
                         Button(onClick = {
-                            note.content = text
+                            noteEntity.content = text
 
-                            homeViewModel.addOrUpdateNote(note)
-                            if (note.content.isBlank()) {
-                                homeViewModel.deleteNote(note)
+                            homeViewModel.addOrUpdateNote(noteEntity)
+                            if (noteEntity.content.isBlank()) {
+                                homeViewModel.deleteNote(noteEntity)
                             }
                             navController.popBackStack()
                         }) {
@@ -84,17 +85,18 @@ fun EmptyNoteScreen(homeViewModel: HomeViewModel, navController: NavController) 
                 .fillMaxSize()
         ) {
             TextField(
-                value = text, onValueChange = {
+                value = text,
+                onValueChange = {
                     text = it
                 },
-                placeholder = {Text("New Note...")},
+                placeholder = { Text("New Note...") },
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.Black,
                     unfocusedContainerColor = Color.Black,
 
-                ),
+                    ),
 
-            )
+                )
         }
     }
 }

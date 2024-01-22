@@ -1,21 +1,17 @@
 package com.example.sultanmuradnotes
 
-import android.annotation.SuppressLint
+import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.sp
 import com.example.sultanmuradnotes.navigation.Navigation
 import com.example.sultanmuradnotes.ui.theme.SultanmuradNotesTheme
 import com.example.sultanmuradnotes.ui.viewmodel.HomeViewModel
@@ -24,20 +20,25 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+    companion object {
+        lateinit var VERSION_NAME: String
+        val colorList: List<Color> = listOf(Color(red = 0, green = 104, blue = 132))
+    }
 
-    @OptIn(ExperimentalMaterial3Api::class)
-    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val homeViewModel: HomeViewModel by viewModels()
 
-//        homeViewModel.deleteAllNotes()
-
+        VERSION_NAME = getVersionName(applicationContext)
 //        TODO("Implement sorting with different properties.")
-//        TODO("change font size")
+//        TODO("Change font size setting")
 //        TODO("Backup to cloud")
-//        TODO("Configure so that db does not fetch data from main thread")
 //        TODO("Make UI beautiful")
+//        TODO("Complete Settings Page")
+
+//        homeViewModel.deleteAll()
 
 
         setContent {
@@ -49,8 +50,11 @@ class MainActivity : ComponentActivity() {
                     Surface(
                         modifier = Modifier.padding(top = it.calculateTopPadding()),
                     ) {
-//                        HomeScreen(homeViewModel = homeViewModel)
-                        Navigation(homeViewModel = homeViewModel)
+                        Navigation(
+                            homeViewModel = homeViewModel,
+                        )
+
+
                     }
                 }
             }
@@ -60,4 +64,13 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+
+fun getVersionName(context: Context): String {
+    return try {
+        val packageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
+        packageInfo.versionName
+    } catch (e: PackageManager.NameNotFoundException) {
+        "N/A"
+    }
+}
 
