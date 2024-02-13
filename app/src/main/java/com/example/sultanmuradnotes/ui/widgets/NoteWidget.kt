@@ -37,7 +37,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.navigation.NavController
 import com.example.sultanmuradnotes.navigation.Screen
 import com.example.sultanmuradnotes.ui.viewmodel.HomeViewModel
-
+import androidx.compose.foundation.lazy.items
 
 @Composable
 fun NoteWidget(note: Note) {
@@ -76,7 +76,6 @@ fun NoteWidget(note: Note) {
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun VerticalScrollingNoteList(notes: List<Note>, homeViewModel: HomeViewModel, navController: NavController) {
-    var count = 0
     var fabHeight by remember {
         mutableIntStateOf(0)
     }
@@ -106,19 +105,16 @@ fun VerticalScrollingNoteList(notes: List<Note>, homeViewModel: HomeViewModel, n
                 end = 20.dp
             )
         ) {
-            items(notes.size) {
+            items(notes) {
                 Box(
                     modifier = Modifier
                         .background(Color.Transparent)
                         .clip(RoundedCornerShape(15))
-                        .clickable { navController.navigate(Screen.NOTE.name +"/" +notes[count].id)}
+                        .clickable { navController.navigate(Screen.NOTE.name +"/" +it.id)}
                 ) {
-                    NoteWidget(notes[count])
+                    NoteWidget(it)
                 }
                 Spacer(Modifier.height(20.dp))
-                if (count != notes.size - 1) {
-                    count++
-                }
             }
         }
     }
